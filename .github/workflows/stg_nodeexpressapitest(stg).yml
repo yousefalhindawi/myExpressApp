@@ -42,9 +42,7 @@ jobs:
     environment:
       name: 'stg'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
-
+    
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
@@ -54,13 +52,6 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
       
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_103C68598F3348658D588E4B0E499236 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_96C78FF022324268A7E817C48A169C1B }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_3F0E8699BB9C4535B725B3D1BE35C126 }}
-
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
@@ -68,4 +59,4 @@ jobs:
           app-name: 'nodeexpressapitest'
           slot-name: 'stg'
           package: .
-          
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E7B870E10B4C40FA85AAE79DB51132AF }}
